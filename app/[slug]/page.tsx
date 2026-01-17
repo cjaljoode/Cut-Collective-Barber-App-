@@ -1,4 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { createServerClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { notFound } from "next/navigation"
 import Image from "next/image"
@@ -32,7 +32,12 @@ interface Service {
 
 // Dynamic Metadata for SEO
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const supabase = createServerComponentClient({ cookies })
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  const cookieStore = cookies()
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: cookieStore,
+  })
 
   const { data: shop } = await supabase
     .from("shops")
@@ -54,7 +59,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function PublicProfilePage({ params }: PageProps) {
-  const supabase = createServerComponentClient({ cookies })
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  const cookieStore = cookies()
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: cookieStore,
+  })
   const { slug } = params
 
   const { data: shop } = await supabase

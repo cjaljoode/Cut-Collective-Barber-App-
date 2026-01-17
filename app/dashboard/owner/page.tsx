@@ -1,4 +1,4 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { createServerClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import {
@@ -31,7 +31,12 @@ import { Badge } from "@/components/ui/badge"
 import { PeakHourChart } from "@/components/owner/peak-hour-chart"
 
 export default async function OwnerDashboard() {
-  const supabase = createServerComponentClient({ cookies })
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  const cookieStore = cookies()
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: cookieStore,
+  })
 
   // 1. Check Auth & Role
   const {
