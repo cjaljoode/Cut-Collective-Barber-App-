@@ -5,18 +5,18 @@ export function middleware(request: NextRequest) {
   const host = request.headers.get("host") || ""
   const tenant = parseTenantFromHost(host)
 
-  if (!tenant) {
-    return NextResponse.next()
+  const headers = new Headers(request.headers)
+  if (tenant) {
+    headers.set("x-tenant", tenant)
   }
 
-  const headers = new Headers(request.headers)
-  headers.set("x-tenant", tenant)
-
-  return NextResponse.next({
+  const response = NextResponse.next({
     request: {
       headers,
     },
   })
+
+  return response
 }
 
 export const config = {
